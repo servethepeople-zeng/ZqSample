@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.zqsdk.sample.utils.VideoFeedView
+        android:id="@+id/primary_video_feed"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
+    <Spinner
+        android:layout_width="200dp"
+        android:id="@+id/spinner"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:spinnerMode="dropdown"
+        android:dropDownVerticalOffset="45dp"
+        android:background="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+
+    <Button
+        android:id="@+id/button_device"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:text="扫描设备"
+        android:background="@drawable/round_btn"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textview_ip"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:textSize="18sp"
+        android:text="IP:未发现设备"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/button_device"
+        app:layout_constraintLeft_toRightOf="@id/button_device"
+        app:layout_constraintTop_toTopOf="@id/button_device" />
+
+    <Button
+        android:id="@+id/button_register"
+        android:layout_width="150dp"
+        android:layout_height="55dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/round_btn"
+        android:text="注册"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_device" />
+
+    <TextView
+        android:id="@+id/textview_log"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:textSize="18sp"
+        android:text="日志开关"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/button_register"
+        app:layout_constraintLeft_toRightOf="@id/button_register"
+        app:layout_constraintTop_toTopOf="@id/button_register" />
+
+    <Switch
+        android:id="@+id/switch_log"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:switchMinWidth="20dp"
+        android:textOn="on"
+        android:textOff="off"
+        android:thumb="@drawable/thumb"
+        android:track="@drawable/track"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/textview_log"
+        app:layout_constraintLeft_toRightOf="@id/textview_log"
+        app:layout_constraintTop_toTopOf="@id/textview_log"/>
+
+    <Button
+        android:id="@+id/button_live"
+        android:layout_width="150dp"
+        android:layout_height="55dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/round_btn"
+        android:text="推流"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_register" />
+
+
+    <Button
+        android:id="@+id/button_test"
+        android:layout_width="150dp"
+        android:layout_height="55dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/round_btn"
+        android:text="识别"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_live" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
