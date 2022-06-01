@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.zq.zqai.socket.main.ZQSdk;
+import com.zq.zqai.socket.model.LiveResolution;
 import com.zqsdk.sample.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -43,6 +45,7 @@ import dji.common.error.DJIError;
 import dji.common.error.DJISDKError;
 import dji.common.gimbal.Rotation;
 import dji.common.gimbal.RotationMode;
+import dji.common.useraccount.UserAccountState;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.base.BaseComponent;
 import dji.sdk.base.BaseProduct;
@@ -51,8 +54,10 @@ import dji.sdk.gimbal.Gimbal;
 import dji.sdk.sdkmanager.DJISDKInitEvent;
 import dji.sdk.sdkmanager.DJISDKManager;
 import dji.sdk.sdkmanager.LiveVideoResolution;
+import dji.sdk.useraccount.UserAccountManager;
 
 import static dji.sdk.sdkmanager.LiveVideoBitRateMode.AUTO;
+import static dji.sdk.sdkmanager.LiveVideoBitRateMode.MANUAL;
 import static dji.sdk.sdkmanager.LiveVideoBitRateMode.find;
 
 public class MyActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,View.OnClickListener{
@@ -60,12 +65,14 @@ public class MyActivity extends AppCompatActivity implements AdapterView.OnItemS
     private static final String TAG = MyActivity.class.getName();
     private String[] typeArray = {"自动识别", "I串横担端挂点", "I串绝缘子串", "I串导线端挂点", "V串左横担端挂点", "V串左绝缘子串", "V串导线端挂点", "V串右绝缘子串", "V串右横担端挂点", "耐张串横担端挂点",
             "耐张串", "耐张串导线端挂点"};
-    private Button button_device,button_register,button_live,button_test;
+    private Button button_device,button_register,button_live,button_test,button_reset;
     private TextView textview_ip;
     private String ip,model;
     private Spinner sp;
-    private int classId;
+    private int classId, position;
     private Switch aswitch;
+    private RadioGroup radioGroup,radioGroup1;
+    private LiveResolution liveResolution;
 
 
     @Override
@@ -101,6 +108,52 @@ public class MyActivity extends AppCompatActivity implements AdapterView.OnItemS
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ZQSdk.getInstance().saveLog(isChecked);
+            }
+        });
+        button_reset = findViewById(R.id.button_reset);
+        button_reset.setOnClickListener(this);
+        radioGroup = findViewById(R.id.radioGroup);
+        radioGroup.check(R.id.radioButton1);
+        position = 0;
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId){
+                    case R.id.radioButton1:
+                        position = 0;
+                        break;
+                    case R.id.radioButton2:
+                        position = 1;
+                        break;
+                    case R.id.radioButton3:
+                        position = 2;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        radioGroup1 = findViewById(R.id.radioGroup1);
+        radioGroup1.check(R.id.radioButton4);
+        liveResolution = LiveResolution.RESOLUTION_1280_720;
+        DJISDKManager.getInstance().getLiveStreamManager().setVideoEncodingEnabled(true);
+        radioGroup1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId){
+                    case R.id.radioButton4:
+                        liveResolution = LiveResolution.RESOLUTION_1280_720;
+                        break;
+                    case R.id.radioButton5:
+                        liveResolution = LiveResolution.RESOLUTION_1920_1080;
+                        break;
+                    case R.id.radioButton6:
+                        liveResolution = LiveResolution.RESOLUTION_960_720;
+                        break;
+                    default:
+                        break;
+                }
             }
         });
     }
@@ -156,7 +209,6 @@ public class MyActivity extends AppCompatActivity implements AdapterView.OnItemS
 
                     @Override
                     public void onReceivedMessage(String message) {
-                        Log.d("test",message);
                         if ("connect success".equals(message)) {
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -177,6 +229,8 @@ public class MyActivity extends AppCompatActivity implements AdapterView.OnItemS
 
                         }else if("disconnect".equals(message)) {
                             Log.e(TAG,"AI盒子断开连接");
+                        }else if("timeout".equals(message)){
+                            timeoutTakePhoto();
                         }
                     }
                 });
@@ -185,8 +239,19 @@ public class MyActivity extends AppCompatActivity implements AdapterView.OnItemS
                 startDJILiveShow("rtmp://" + ip + ":1935/live/stream?chnn=0");
                 break;
             case R.id.button_test:
-                ZQSdk.getInstance().sendRecognitionCommand(1, classId);
+                ZQSdk.getInstance().sendRecognitionCommand(1, classId == 0?999:classId,position);
                 ToastUtils.showToast("classId="+classId);
+                break;
+            case R.id.button_reset:
+                Gimbal gimbal = MApplication.getGimbalInstance();
+                gimbal.reset(new CommonCallbacks.CompletionCallback() {
+                    @Override
+                    public void onResult(DJIError djiError) {
+                        if(djiError == null){
+
+                        }
+                    }
+                });
                 break;
             default:
                 break;
@@ -197,15 +262,18 @@ public class MyActivity extends AppCompatActivity implements AdapterView.OnItemS
         //禁用音频
         DJISDKManager.getInstance().getLiveStreamManager().setAudioStreamingEnabled(false);
         DJISDKManager.getInstance().getLiveStreamManager().setAudioMuted(true);
-        //默认1280*720  精灵4rtk VIDEO_RESOLUTION_1280_720     御2 VIDEO_RESOLUTION_960_720
-        if ("Mavic 2 Enterprise Advanced".equals(model)){
-            DJISDKManager.getInstance().getLiveStreamManager().setLiveVideoResolution(LiveVideoResolution.VIDEO_RESOLUTION_960_720);
-            Log.d("test","mavcie");
-        }else if("Phantom 4 RTK".equals(model)){
-            DJISDKManager.getInstance().getLiveStreamManager().setLiveVideoResolution(LiveVideoResolution.VIDEO_RESOLUTION_1280_720);
-        }
+
         DJISDKManager.getInstance().getLiveStreamManager().setVideoEncodingEnabled(true);
         DJISDKManager.getInstance().getLiveStreamManager().setLiveVideoBitRateMode(AUTO);
+
+        if(liveResolution.getValue() == 1){
+            DJISDKManager.getInstance().getLiveStreamManager().setLiveVideoResolution(LiveVideoResolution.VIDEO_RESOLUTION_1280_720);
+        }else if(liveResolution.getValue() == 0){
+            DJISDKManager.getInstance().getLiveStreamManager().setLiveVideoResolution(LiveVideoResolution.VIDEO_RESOLUTION_1920_1080);
+        }else if(liveResolution.getValue() == 2){
+            DJISDKManager.getInstance().getLiveStreamManager().setLiveVideoResolution(LiveVideoResolution.VIDEO_RESOLUTION_960_720);
+        }
+
         if (!isLiveStreamManagerOn()) {
             return;
         }
@@ -254,7 +322,12 @@ public class MyActivity extends AppCompatActivity implements AdapterView.OnItemS
             return;
         }
         DJISDKManager.getInstance().getLiveStreamManager().stopStream();
-        ZQSdk.getInstance().stopReceivedZqAI();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        stopDJILiveShow();
     }
 
     private void takePhoto() {
@@ -269,6 +342,22 @@ public class MyActivity extends AppCompatActivity implements AdapterView.OnItemS
                         ToastUtils.showToast("startShootPhoto=" + djiError.getDescription());
                     } else {
                         ToastUtils.showToast("ShootPhoto success");
+                    }
+                }
+            });
+        }
+    }
+
+    private void timeoutTakePhoto() {
+        Camera camera = MApplication.getCameraInstance();
+        if (camera != null) {
+            camera.startShootPhoto(new CommonCallbacks.CompletionCallback() {
+                @Override
+                public void onResult(DJIError djiError) {
+                    if (djiError != null) {
+                        ToastUtils.showToast("startShootPhoto=" + djiError.getDescription());
+                    } else {
+                        ToastUtils.showToast("Timeout ShootPhoto success");
                     }
                 }
             });

@@ -26,7 +26,7 @@
 
     <Button
         android:id="@+id/button_device"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="50dp"
         android:text="扫描设备"
         android:background="@drawable/round_btn"
@@ -52,7 +52,7 @@
 
     <Button
         android:id="@+id/button_register"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="55dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/round_btn"
@@ -92,8 +92,22 @@
         app:layout_constraintTop_toTopOf="@id/textview_log"/>
 
     <Button
+        android:id="@+id/button_reset"
+        android:layout_width="100dp"
+        android:layout_height="55dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/round_btn"
+        android:text="回中"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintLeft_toLeftOf="@id/switch_log"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/button_register" />
+
+    <Button
         android:id="@+id/button_live"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="55dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/round_btn"
@@ -105,10 +119,43 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_register" />
 
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toRightOf="@+id/button_live"
+        app:layout_constraintTop_toTopOf="@id/button_live">
+
+        <RadioButton
+            android:id="@+id/radioButton4"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="720p"
+            android:textSize="18sp"/>
+
+        <RadioButton
+            android:id="@+id/radioButton5"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="1080p"
+            android:textSize="18sp"/>
+
+        <RadioButton
+            android:id="@+id/radioButton6"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="960*720"
+            android:textSize="18sp"/>
+    </RadioGroup>
+
 
     <Button
         android:id="@+id/button_test"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="55dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/round_btn"
@@ -119,5 +166,40 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_live" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_test">
+
+        <RadioButton
+            android:id="@+id/radioButton1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="不区分"
+            android:textSize="18sp"/>
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="左"
+            android:textSize="18sp"/>
+
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="右"
+            android:textSize="18sp"/>
+    </RadioGroup>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
